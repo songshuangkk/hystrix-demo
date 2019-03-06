@@ -15,7 +15,12 @@ public class ObserveCommand extends HystrixCommand<Integer> {
 
   @Override
   protected Integer run() throws Exception {
-    return null;
+    return num;
+  }
+
+  @Override
+  public Integer getFallback() {
+    return 0;
   }
 
   public static void main(String[] args) throws InterruptedException {
@@ -25,6 +30,10 @@ public class ObserveCommand extends HystrixCommand<Integer> {
         ObserveCommand executeCommand = new ObserveCommand(num);
         // 这个使用的是异步的方式进行处理
         Observable<Integer> observe = executeCommand.observe();
+
+        observe.subscribe(result -> {
+          System.out.printf("observer get result = %d\n", result);
+        });
         System.out.println();
       }).start();
     }
